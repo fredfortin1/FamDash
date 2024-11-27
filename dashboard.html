@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fortin Family App</title>
+
+  <!-- External Libraries -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="Favicon.ico">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Theme Toggle Button -->
+  <div class="toggle-container">
+    <button id="theme-toggle">Dark Theme</button>
+	  <!-- Theme Toggle Clock -->
+<div class="toggle-container"> Terrebonne, QC : 
+  <span id="clock" class="clock"></span>
+</div>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div class="dashboard">
+    <!-- First Row: Calendar and Task Assignment -->
+    <div class="row">
+      <!-- Calendar Section -->
+      <div class="calendar-container">
+        <h2>Family Calendar</h2>
+        <iframe 
+          src="https://calendar.google.com/calendar/embed?src=am61am60amif3ame1dmvkf78a4@group.calendar.google.com&ctz=America/New_York&mode=AGENDA" 
+          style="width: 100%; height: 400px; border: 0;" 
+          frameborder="0" 
+          scrolling="no">
+        </iframe>
+      </div>
+
+      <!-- Task Assignment Module -->
+      <div class="task-module">
+        <h2>Task Assignment</h2>
+        <form id="task-form">
+          <label for="task-title">Task Title:</label>
+          <input type="text" id="task-title" placeholder="Enter task title" required>
+          <label for="task-assigned-to">Assign To:</label>
+          <select id="task-assigned-to" required>
+            <option value="">Select Assignee</option>
+            <option value="Éllie">Éllie</option>
+            <option value="Alexie">Alexie</option>
+          </select>
+          <label for="task-reward">Reward ($):</label>
+          <input type="number" id="task-reward" placeholder="Reward amount" required min="0">
+          <button type="submit">Add Task</button>
+        </form>
+        <h3>Tasks for Éllie</h3>
+        <ul id="tasks-ellie"></ul>
+        <h3>Tasks for Alexie</h3>
+        <ul id="tasks-alexie"></ul>
+      </div>
+    </div>
+
+    <!-- Second Row: Meals and Grocery List -->
+    <div class="row">
+      <!-- Meals Planner -->
+      <div class="meals-container">
+        <h2>Meals of the Week</h2>
+        <ul id="meals-list">
+          <!-- Dynamically added meal items -->
+        </ul>
+        <form id="meals-form">
+          <label for="meal-input">Meal Name:</label>
+          <input type="text" id="meal-input" placeholder="Enter a meal" required>
+          <label for="meal-day">Select Day:</label>
+          <select id="meal-day" required>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+          </select>
+          <button type="submit">Add Meal</button>
+        </form>
+      </div>
+
+      <!-- Grocery List Module -->
+      <!-- Grocery List Module -->
+<div class="grocery-container">
+  <h2>Grocery List</h2>
+  <form id="grocery-form">
+    <label for="grocery-item">Item Name:</label>
+    <input type="text" id="grocery-item" placeholder="Enter grocery item" required maxlength="50">
+    <label for="grocery-quantity">Quantity:</label>
+    <input type="number" id="grocery-quantity" placeholder="Quantity" min="1" required>
+    <label for="grocery-location">Location:</label>
+    <input type="text" id="grocery-location" placeholder="e.g., Walmart, Costco" required maxlength="50">
+    <label for="grocery-category">Category:</label>
+    <select id="grocery-category" required>
+      <option value="" disabled selected>Select Category</option>
+      <option value="Vegetables">Vegetables</option>
+      <option value="Fruits">Fruits</option>
+      <option value="Dairy">Dairy</option>
+      <option value="Meat">Meat</option>
+      <option value="Beverages">Beverages</option>
+      <option value="Snacks">Snacks</option>
+      <option value="Other">Other</option>
+    </select>
+    <button type="submit">Add Item</button>
+  </form>
+  <div>
+    <h3>Active Grocery List</h3>
+    <ul id="grocery-list"></ul>
+  </div>
+  <div>
+    <h3>Bought Items</h3>
+    <ul id="grocery-archive"></ul>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <!-- Custom Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>

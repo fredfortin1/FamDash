@@ -1,28 +1,27 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-
 const firebaseConfig = {
-  apiKey: "your-api-key",
-  authDomain: "your-auth-domain",
-  databaseURL: "your-database-url",
-  projectId: "your-project-id",
-  storageBucket: "your-storage-bucket",
-  messagingSenderId: "your-messaging-sender-id",
-  appId: "your-app-id",
-  measurementId: "your-measurement-id"
+  apiKey: "AIzaSyAASy_RNNlpPMGiFYDEaYGppMAVpUYBRL8",
+  authDomain: "db---dashboard-famille.firebaseapp.com",
+  databaseURL: "https://db---dashboard-famille-default-rtdb.firebaseio.com",
+  projectId: "db---dashboard-famille",
+  storageBucket: "db---dashboard-famille.appspot.com",
+  messagingSenderId: "1042615306170",
+  appId: "1:1042615306170:web:2e17ef57dc964f6e537f83",
+  measurementId: "G-7TBK3PMXVG"
 };
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
 
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
-// Initialize all modules when DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
-  initializeModules();
-  loadTasksFromFirebase();
-  loadGroceriesFromFirebase();
-  loadMealsFromFirebase();
-  initializeClock();
+// Test Firebase connection
+const testRef = database.ref('test/');
+testRef.set({ message: "Hello Firebase" }, (error) => {
+  if (error) {
+    console.error("Error writing to database:", error);
+  } else {
+    console.log("Data written successfully.");
+  }
 });
 
 // **Task Module**

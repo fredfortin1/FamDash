@@ -19,10 +19,10 @@
   <!-- Theme Toggle Button -->
   <div class="toggle-container">
     <button id="theme-toggle">Dark Theme</button>
-	  <!-- Theme Toggle Clock -->
-<div class="toggle-container"> Terrebonne, QC : 
-  <span id="clock" class="clock"></span>
-</div>
+    <!-- Theme Toggle Clock -->
+    <div class="toggle-container">
+      Terrebonne, QC : <span id="clock" class="clock"></span>
+    </div>
   </div>
 
   <!-- Main Dashboard -->
@@ -68,64 +68,63 @@
       <!-- Meals Planner -->
       <div class="meals-container">
         <h2>Meals of the Week</h2>
-        <ul id="meals-list">
-          <!-- Dynamically added meal items -->
-        </ul>
+        <ul id="meals-list"></ul>
         <form id="meals-form">
           <label for="meal-input">Meal Name:</label>
           <input type="text" id="meal-input" placeholder="Enter a meal" required>
           <label for="meal-day">Select Day:</label>
           <select id="meal-day" required>
+            <option value="">Select a Day</option>
             <option value="Monday">Monday</option>
             <option value="Tuesday">Tuesday</option>
             <option value="Wednesday">Wednesday</option>
             <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
           </select>
           <button type="submit">Add Meal</button>
         </form>
       </div>
 
       <!-- Grocery List Module -->
-      <!-- Grocery List Module -->
-<div class="grocery-container">
-  <h2>Grocery List</h2>
-  <form id="grocery-form">
-    <label for="grocery-item">Item Name:</label>
-    <input type="text" id="grocery-item" placeholder="Enter grocery item" required maxlength="50">
-    <label for="grocery-quantity">Quantity:</label>
-    <input type="number" id="grocery-quantity" placeholder="Quantity" min="1" required>
-    <label for="grocery-location">Location:</label>
-    <input type="text" id="grocery-location" placeholder="e.g., Walmart, Costco" required maxlength="50">
-    <label for="grocery-category">Category:</label>
-    <select id="grocery-category" required>
-      <option value="" disabled selected>Select Category</option>
-      <option value="Vegetables">Vegetables</option>
-      <option value="Fruits">Fruits</option>
-      <option value="Dairy">Dairy</option>
-      <option value="Meat">Meat</option>
-      <option value="Beverages">Beverages</option>
-      <option value="Snacks">Snacks</option>
-      <option value="Other">Other</option>
-    </select>
-    <button type="submit">Add Item</button>
-  </form>
-  <div>
-    <h3>Active Grocery List</h3>
-    <ul id="grocery-list"></ul>
-  </div>
-  <div>
-    <h3>Bought Items</h3>
-    <ul id="grocery-archive"></ul>
-  </div>
-</div>
+      <div class="grocery-container">
+        <h2>Grocery List</h2>
+        <form id="grocery-form">
+          <label for="grocery-item">Item Name:</label>
+          <input type="text" id="grocery-item" placeholder="Enter grocery item" required maxlength="50">
+          <label for="grocery-quantity">Quantity:</label>
+          <input type="number" id="grocery-quantity" placeholder="Quantity" min="1" required>
+          <label for="grocery-location">Location:</label>
+          <input type="text" id="grocery-location" placeholder="e.g., Walmart, Costco" required maxlength="50">
+          <label for="grocery-category">Category:</label>
+          <select id="grocery-category" required>
+            <option value="" disabled selected>Select Category</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Fruits">Fruits</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Meat">Meat</option>
+            <option value="Beverages">Beverages</option>
+            <option value="Snacks">Snacks</option>
+            <option value="Other">Other</option>
+          </select>
+          <button type="submit">Add Item</button>
+        </form>
+        <div>
+          <h3>Active Grocery List</h3>
+          <ul id="grocery-list"></ul>
+        </div>
+        <div>
+          <h3>Bought Items</h3>
+          <ul id="grocery-archive"></ul>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Custom Scripts -->
+  <!-- Firebase and Custom Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
   <script src="script.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
-<script src="script.js"></script>
-
 </body>
 </html>

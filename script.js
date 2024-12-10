@@ -1,12 +1,13 @@
 // Firebase configuration object (replace with your project details)
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+ apiKey: "AIzaSyAASy_RNNlpPMGiFYDEaYGppMAVpUYBRL8",
+    authDomain: "db---dashboard-famille.firebaseapp.com",
+    databaseURL: "https://db---dashboard-famille-default-rtdb.firebaseio.com",
+    projectId: "db---dashboard-famille",
+    storageBucket: "db---dashboard-famille.firebasestorage.app",
+    messagingSenderId: "1042615306170",
+    appId: "1:1042615306170:web:2e17ef57dc964f6e537f83",
+    measurementId: "G-7TBK3PMXVG"
 };
 
 // Initialize Firebase

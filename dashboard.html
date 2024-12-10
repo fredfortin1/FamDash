@@ -19,7 +19,6 @@
   <!-- Theme Toggle Button -->
   <div class="toggle-container">
     <button id="theme-toggle">Dark Theme</button>
-    <!-- Theme Toggle Clock -->
     <div class="toggle-container">
       Terrebonne, QC : <span id="clock" class="clock"></span>
     </div>
@@ -51,6 +50,8 @@
             <option value="">Select Assignee</option>
             <option value="Éllie">Éllie</option>
             <option value="Alexie">Alexie</option>
+            <option value="Ysabelle">Ysabelle</option>
+            <option value="Fred">Fred</option>
           </select>
           <label for="task-reward">Reward ($):</label>
           <input type="number" id="task-reward" placeholder="Reward amount" required min="0">
@@ -100,12 +101,14 @@
           <label for="grocery-category">Category:</label>
           <select id="grocery-category" required>
             <option value="" disabled selected>Select Category</option>
-            <option value="Vegetables">Vegetables</option>
-            <option value="Fruits">Fruits</option>
             <option value="Dairy">Dairy</option>
-            <option value="Meat">Meat</option>
+            <option value="Non Dairy">Non Dairy</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Gluten Free">Gluten Free</option>
+            <option value="Protein Meat">Protein Meat</option>
             <option value="Beverages">Beverages</option>
             <option value="Snacks">Snacks</option>
+            <option value="Fruits">Fruits</option>
             <option value="Other">Other</option>
           </select>
           <button type="submit">Add Item</button>
@@ -122,9 +125,7 @@
     </div>
   </div>
 
-  <!-- Firebase and Custom Scripts -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
-<script src="script.js"></script>
+  <!-- Custom Script -->
+  <script src="script.js"></script>
 </body>
 </html>

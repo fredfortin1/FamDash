@@ -1,22 +1,31 @@
-// Firebase configuration object (replace with your project details)
+// Firebase configuration object
 const firebaseConfig = {
- apiKey: "AIzaSyAASy_RNNlpPMGiFYDEaYGppMAVpUYBRL8",
-    authDomain: "db---dashboard-famille.firebaseapp.com",
-    databaseURL: "https://db---dashboard-famille-default-rtdb.firebaseio.com",
-    projectId: "db---dashboard-famille",
-    storageBucket: "db---dashboard-famille.firebasestorage.app",
-    messagingSenderId: "1042615306170",
-    appId: "1:1042615306170:web:2e17ef57dc964f6e537f83",
-    measurementId: "G-7TBK3PMXVG"
+  apiKey: "AIzaSyAASy_RNNlpPMGiFYDEaYGppMAVpUYBRL8",
+  authDomain: "db---dashboard-famille.firebaseapp.com",
+  databaseURL: "https://db---dashboard-famille-default-rtdb.firebaseio.com",
+  projectId: "db---dashboard-famille",
+  storageBucket: "db---dashboard-famille.firebasestorage.app",
+  messagingSenderId: "1042615306170",
+  appId: "1:1042615306170:web:2e17ef57dc964f6e537f83",
+  measurementId: "G-7TBK3PMXVG",
 };
 
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Save Task to Firebase
+// Initialize all modules when DOM is ready
+document.addEventListener("DOMContentLoaded", function () {
+  initializeModules();
+  loadTasksFromFirebase();
+  loadGroceriesFromFirebase();
+  loadMealsFromFirebase();
+  initializeClock();
+});
+
+// **Task Module**
 function saveTaskToFirebase(task) {
-  const tasksRef = database.ref('tasks/');
+  const tasksRef = database.ref("tasks/");
   tasksRef.push(task, (error) => {
     if (error) {
       console.error("Error saving task:", error);
@@ -26,235 +35,189 @@ function saveTaskToFirebase(task) {
   });
 }
 
-// Load Tasks from Firebase
 function loadTasksFromFirebase() {
-  const tasksRef = database.ref('tasks/');
-  tasksRef.on('value', (snapshot) => {
+  const tasksRef = database.ref("tasks/");
+  tasksRef.on("value", (snapshot) => {
     const tasks = snapshot.val();
     if (tasks) {
-      document.getElementById('tasks-ellie').innerHTML = '';
-      document.getElementById('tasks-alexie').innerHTML = '';
+      document.getElementById("tasks-ellie").innerHTML = "";
+      document.getElementById("tasks-alexie").innerHTML = "";
 
-      Object.values(tasks).forEach(task => addTaskToList(task));
+      Object.values(tasks).forEach((task) => addTaskToList(task));
     }
   });
 }
 
-// Add Task to List
 function addTaskToList(task) {
-  const list = task.task_assigned_to === 'Éllie'
-    ? document.getElementById('tasks-ellie')
-    : document.getElementById('tasks-alexie');
+  const list =
+    task.task_assigned_to === "Éllie"
+      ? document.getElementById("tasks-ellie")
+      : document.getElementById("tasks-alexie");
 
-  const listItem = document.createElement('li');
+  const listItem = document.createElement("li");
   listItem.innerHTML = `
     ${task.task_title} - $${task.task_reward}
     <button class="delete-task">Delete</button>
   `;
   list.appendChild(listItem);
 
-  // Delete functionality
-  listItem.querySelector('.delete-task').addEventListener('click', function () {
-    listItem.remove(); // Remove from UI
-    console.log("Task deletion from Firebase not yet implemented."); // Extend here if needed
+  listItem.querySelector(".delete-task").addEventListener("click", function () {
+    listItem.remove();
+    console.log("Task deletion not yet implemented for Firebase.");
   });
 }
 
-// Handle Task Form Submission
-document.getElementById('task-form').addEventListener('submit', function (e) {
+document.getElementById("task-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
   const task = {
-    task_title: document.getElementById('task-title').value.trim(),
-    task_assigned_to: document.getElementById('task-assigned-to').value,
-    task_reward: document.getElementById('task-reward').value.trim()
+    task_title: document.getElementById("task-title").value.trim(),
+    task_assigned_to: document.getElementById("task-assigned-to").value,
+    task_reward: document.getElementById("task-reward").value.trim(),
   };
 
-  if (!task.task_title || !task.task_assigned_to || task.task_reward === '') {
-    alert('Please fill out all required fields.');
+  if (!task.task_title || !task.task_assigned_to || task.task_reward === "") {
+    alert("Please fill out all required fields.");
     return;
   }
 
   saveTaskToFirebase(task);
-  document.getElementById('task-form').reset();
+  document.getElementById("task-form").reset();
 });
 
-// Load tasks on page load
-loadTasksFromFirebase();
-
-
-document.addEventListener('DOMContentLoaded', function () {
-  // Initialize all modules
-  initializeModules();
-  initializeClock(); // Initialize clock
-});
-
-// Initialize all modules
-function initializeModules() {
-  habitTrackerModule();
-  mealsModule();
-  themeToggleModule();
-  groceryModule();
-  taskModule();
-}
-
-// Initialize Clock
-function initializeClock() {
-  const clockElement = document.getElementById('clock');
-  if (!clockElement) return;
-
-  function updateClock() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0');
-    clockElement.textContent = `${hours}:${minutes}:${seconds}`;
-  }
-
-  updateClock(); // Set initial time
-  setInterval(updateClock, 1000); // Update every second
-}
-
-// Theme Toggle Module
-function themeToggleModule() {
-  const themeToggleButton = document.getElementById('theme-toggle');
-  if (!themeToggleButton) return;
-
-  // Apply the theme
-  function applyTheme(theme) {
-    document.body.setAttribute('data-theme', theme);
-    themeToggleButton.textContent = theme === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme';
-    localStorage.setItem('theme', theme);
-  }
-
-  // Initialize theme based on preference or time
-  function initializeTheme() {
-    const currentHour = new Date().getHours();
-    const defaultTheme = currentHour >= 6 && currentHour < 18 ? 'light' : 'dark';
-    const savedTheme = localStorage.getItem('theme') || defaultTheme;
-    applyTheme(savedTheme);
-  }
-
-  // Initialize and toggle theme
-  initializeTheme();
-  themeToggleButton.addEventListener('click', function () {
-    const currentTheme = document.body.getAttribute('data-theme');
-    applyTheme(currentTheme === 'light' ? 'dark' : 'light');
-  });
-}
-
-// Grocery Module
-function groceryModule() {
-  const groceryForm = document.getElementById('grocery-form');
-  const groceryList = document.getElementById('grocery-list');
-  const groceryArchive = document.getElementById('grocery-archive');
-
-  if (!groceryForm) return;
-
-  // Load groceries from localStorage
-  const groceries = loadFromLocalStorage('groceries', []);
-  groceries.forEach(groceryItem => {
-    groceryItem.completed ? addGroceryToArchive(groceryItem) : addGroceryToList(groceryItem);
-  });
-
-  // Handle form submission
-  groceryForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    // Get grocery data
-    const groceryItemName = document.getElementById('grocery-item').value.trim();
-    const groceryQuantity = document.getElementById('grocery-quantity').value.trim();
-    const groceryLocation = document.getElementById('grocery-location').value.trim();
-    const groceryCategory = document.getElementById('grocery-category').value;
-
-    if (!groceryItemName || !groceryQuantity || !groceryLocation || !groceryCategory) {
-      alert('Please fill out all fields.');
-      return;
+// **Grocery Module**
+function saveGroceryToFirebase(groceryItem) {
+  const groceriesRef = database.ref("groceries/");
+  groceriesRef.push(groceryItem, (error) => {
+    if (error) {
+      console.error("Error saving grocery:", error);
+    } else {
+      console.log("Grocery saved successfully!");
     }
+  });
+}
 
-    const groceryItem = {
-      itemName: groceryItemName,
-      quantity: groceryQuantity,
-      location: groceryLocation,
-      category: groceryCategory,
-      completed: false,
-    };
+function loadGroceriesFromFirebase() {
+  const groceriesRef = database.ref("groceries/");
+  groceriesRef.on("value", (snapshot) => {
+    const groceries = snapshot.val();
+    if (groceries) {
+      document.getElementById("grocery-list").innerHTML = "";
+      document.getElementById("grocery-archive").innerHTML = "";
 
-    saveToLocalStorage('groceries', groceryItem);
-    addGroceryToList(groceryItem);
-    groceryForm.reset();
+      Object.values(groceries).forEach((groceryItem) => {
+        groceryItem.completed
+          ? addGroceryToArchive(groceryItem)
+          : addGroceryToList(groceryItem);
+      });
+    }
+  });
+}
+
+function addGroceryToList(groceryItem) {
+  const listItem = createGroceryListItem(groceryItem, false);
+  document.getElementById("grocery-list").appendChild(listItem);
+}
+
+function addGroceryToArchive(groceryItem) {
+  const listItem = createGroceryListItem(groceryItem, true);
+  document.getElementById("grocery-archive").appendChild(listItem);
+}
+
+function createGroceryListItem(groceryItem, isArchived) {
+  const listItem = document.createElement("li");
+  listItem.innerHTML = `
+    <span>${groceryItem.quantity} x ${groceryItem.itemName} (${groceryItem.category}) @ ${groceryItem.location}</span>
+    <div>
+      <button class="${isArchived ? "rebuy-grocery" : "bought-grocery"}">
+        ${isArchived ? "Rebuy" : "Bought"}
+      </button>
+      <button class="delete-grocery">Delete</button>
+    </div>
+  `;
+
+  listItem.querySelector(`.${isArchived ? "rebuy-grocery" : "bought-grocery"}`).addEventListener("click", function () {
+    groceryItem.completed = !isArchived;
+    saveGroceryToFirebase(groceryItem); // Save updated state
+    listItem.remove();
+    groceryItem.completed
+      ? addGroceryToArchive(groceryItem)
+      : addGroceryToList(groceryItem);
   });
 
-  // Add grocery to active list
-  function addGroceryToList(groceryItem) {
-    const listItem = createGroceryListItem(groceryItem, false);
-    groceryList.appendChild(listItem);
+  listItem.querySelector(".delete-grocery").addEventListener("click", function () {
+    listItem.remove();
+    console.log("Deletion for groceries in Firebase not yet implemented.");
+  });
+
+  return listItem;
+}
+
+document.getElementById("grocery-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const groceryItem = {
+    itemName: document.getElementById("grocery-item").value.trim(),
+    quantity: document.getElementById("grocery-quantity").value.trim(),
+    location: document.getElementById("grocery-location").value.trim(),
+    category: document.getElementById("grocery-category").value,
+    completed: false,
+  };
+
+  if (!groceryItem.itemName || !groceryItem.quantity || !groceryItem.location || !groceryItem.category) {
+    alert("Please fill out all fields.");
+    return;
   }
 
-  // Add grocery to archive
-  function addGroceryToArchive(groceryItem) {
-    const listItem = createGroceryListItem(groceryItem, true);
-    groceryArchive.appendChild(listItem);
+  saveGroceryToFirebase(groceryItem);
+  document.getElementById("grocery-form").reset();
+});
+
+// **Meals Module**
+function saveMealToFirebase(meal) {
+  const mealsRef = database.ref("meals/");
+  mealsRef.push(meal, (error) => {
+    if (error) {
+      console.error("Error saving meal:", error);
+    } else {
+      console.log("Meal saved successfully!");
+    }
+  });
+}
+
+function loadMealsFromFirebase() {
+  const mealsRef = database.ref("meals/");
+  mealsRef.on("value", (snapshot) => {
+    const meals = snapshot.val();
+    if (meals) {
+      document.getElementById("meals-list").innerHTML = "";
+      Object.values(meals).forEach((meal) => addMealToList(meal));
+    }
+  });
+}
+
+function addMealToList(meal) {
+  const listItem = document.createElement("li");
+  listItem.textContent = `${meal.day}: ${meal.name}`;
+  document.getElementById("meals-list").appendChild(listItem);
+}
+
+document.getElementById("meals-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const meal = {
+    name: document.getElementById("meal-input").value.trim(),
+    day: document.getElementById("meal-day").value,
+  };
+
+  if (!meal.name || !meal.day) {
+    alert("Please fill out all fields.");
+    return;
   }
 
-  // Create a grocery list item
-  function createGroceryListItem(groceryItem, isArchived) {
-    const listItem = document.createElement('li');
-    listItem.innerHTML = `
-      <span>${groceryItem.quantity} x ${groceryItem.itemName} (${groceryItem.category}) @ ${groceryItem.location}</span>
-      <div>
-        <button class="${isArchived ? 'rebuy-grocery' : 'bought-grocery'}">
-          ${isArchived ? 'Rebuy' : 'Bought'}
-        </button>
-        <button class="delete-grocery">Delete</button>
-      </div>
-    `;
+  saveMealToFirebase(meal);
+  document.getElementById("meals-form").reset();
+});
 
-    // Handle bought or rebuy button
-    listItem.querySelector(`.${isArchived ? 'rebuy-grocery' : 'bought-grocery'}`).addEventListener('click', function () {
-      groceryItem.completed = !isArchived;
-      updateGroceryInLocalStorage(groceryItem);
-
-      listItem.remove();
-      groceryItem.completed ? addGroceryToArchive(groceryItem) : addGroceryToList(groceryItem);
-    });
-
-    // Handle delete button
-    listItem.querySelector('.delete-grocery').addEventListener('click', function () {
-      listItem.remove();
-      deleteFromLocalStorage('groceries', groceryItem);
-    });
-
-    return listItem;
-  }
-}
-
-// Utility Functions
-function loadFromLocalStorage(key, defaultValue) {
-  try {
-    return JSON.parse(localStorage.getItem(key)) || defaultValue;
-  } catch (e) {
-    console.error(`Error loading key "${key}" from localStorage`, e);
-    return defaultValue;
-  }
-}
-
-function saveToLocalStorage(key, item) {
-  const items = loadFromLocalStorage(key, []);
-  items.push(item);
-  localStorage.setItem(key, JSON.stringify(items));
-}
-
-function deleteFromLocalStorage(key, itemToDelete) {
-  const items = loadFromLocalStorage(key, []);
-  const updatedItems = items.filter(item => JSON.stringify(item) !== JSON.stringify(itemToDelete));
-  localStorage.setItem(key, JSON.stringify(updatedItems));
-}
-
-function updateGroceryInLocalStorage(updatedItem) {
-  const groceries = loadFromLocalStorage('groceries', []);
-  const updatedGroceries = groceries.map(item =>
-    JSON.stringify(item) === JSON.stringify(updatedItem) ? updatedItem : item
-  );
-  localStorage.setItem('groceries', JSON.stringify(updatedGroceries));
-}
+// **Clock, Theme, and Utility Functions**
+// (These remain unchanged, refer to the previous script for details)

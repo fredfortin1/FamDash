@@ -1,4 +1,4 @@
-// Firebase configuration object
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAASy_RNNlpPMGiFYDEaYGppMAVpUYBRL8",
   authDomain: "db---dashboard-famille.firebaseapp.com",
@@ -7,11 +7,11 @@ const firebaseConfig = {
   storageBucket: "db---dashboard-famille.firebasestorage.app",
   messagingSenderId: "1042615306170",
   appId: "1:1042615306170:web:2e17ef57dc964f6e537f83",
-  measurementId: "G-7TBK3PMXVG",
+  measurementId: "G-7TBK3PMXVG"
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 // Initialize all modules when DOM is ready

@@ -75,7 +75,9 @@ document.getElementById("task-form").addEventListener("submit", function (e) {
     task_assigned_to: document.getElementById("task-assigned-to").value,
     task_reward: document.getElementById("task-reward").value.trim(),
   };
-
+// Debugging: Log the task object to verify the data
+  console.log("Task Submitted:", task);
+  
   if (!task.task_title || !task.task_assigned_to || task.task_reward === "") {
     alert("Please fill out all required fields.");
     return;
@@ -163,7 +165,9 @@ document.getElementById("grocery-form").addEventListener("submit", function (e) 
     category: document.getElementById("grocery-category").value,
     completed: false,
   };
-
+ // Debugging: Log the grocery item to verify the data
+  console.log("Grocery Item Submitted:", groceryItem);
+  
   if (!groceryItem.itemName || !groceryItem.quantity || !groceryItem.location || !groceryItem.category) {
     alert("Please fill out all fields.");
     return;
@@ -209,7 +213,9 @@ document.getElementById("meals-form").addEventListener("submit", function (e) {
     name: document.getElementById("meal-input").value.trim(),
     day: document.getElementById("meal-day").value,
   };
-
+ // Debugging: Log the meal object to verify the data
+  console.log("Meal Submitted:", meal);
+  
   if (!meal.name || !meal.day) {
     alert("Please fill out all fields.");
     return;

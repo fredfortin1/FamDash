@@ -1,5 +1,5 @@
 const airtableApiKey = "patE0muNfUazAzy2b.213d50dd597994c09fae3386d5adf6dcaf15ece626ad694492e8f9782b74854a"; // Your Airtable API key
-const baseId = "appXrtBBjZD2b3OQO"; // Your Airtable Base ID
+const baseId = "appXrtBBjZD2b3OQO."; // Your Airtable Base ID
 const airtableUrl = `https://api.airtable.com/v0/${baseId}`;
 
 // Helper function to make Airtable API requests

@@ -14,14 +14,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-const tasksRef = database.ref('tasks/');
-tasksRef.push({
-  task_title: "Example Task",
-  task_assigned_to: "Ellie",
-  task_reward: "5"
-});
-
-// Test writing data to Firebase
+// Test Firebase connection
 const testRef = database.ref('test/');
 testRef.set({ message: "Hello Firebase" }, (error) => {
   if (error) {
@@ -30,6 +23,7 @@ testRef.set({ message: "Hello Firebase" }, (error) => {
     console.log("Data written successfully.");
   }
 });
+
 // Initialize all modules when DOM is ready
 document.addEventListener("DOMContentLoaded", function () {
   initializeModules();

@@ -14,6 +14,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
+const tasksRef = database.ref('tasks/');
+tasksRef.push({
+  task_title: "Example Task",
+  task_assigned_to: "Ellie",
+  task_reward: "5"
+});
+
 // Test writing data to Firebase
 const testRef = database.ref('test/');
 testRef.set({ message: "Hello Firebase" }, (error) => {

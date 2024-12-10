@@ -13,6 +13,16 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+});
+
+const testRef = database.ref('test/');
+testRef.set({ message: "Hello Firebase" }, (error) => {
+  if (error) {
+    console.error("Error writing to database:", error);
+  } else {
+    console.log("Data written successfully.");
+  }
+});
 
 // Initialize all modules when DOM is ready
 document.addEventListener("DOMContentLoaded", function () {

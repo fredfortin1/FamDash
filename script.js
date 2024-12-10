@@ -152,19 +152,18 @@ document.getElementById("meals-form").addEventListener("submit", function (e) {
 document.addEventListener("DOMContentLoaded", fetchMeals);
 
 //
-// GROCERY LIST MODULE
-//
-
 // Add a Grocery Item to Airtable
 async function addGroceryItem(itemName, qty, location, category) {
   const newItem = {
     fields: {
       "Item Name": itemName,
-      Qty: parseInt(qty),
+      Qty: parseInt(qty, 10), // Ensure qty is parsed as an integer
       Location: location,
       Category: category,
     },
   };
+
+  console.log("Sending to Airtable:", newItem); // Debugging log
 
   try {
     const result = await airtableRequest("Grocery List", "POST", newItem);
@@ -178,13 +177,15 @@ async function addGroceryItem(itemName, qty, location, category) {
 async function fetchGroceries() {
   try {
     const result = await airtableRequest("Grocery List", "GET");
-    console.log("Grocery List:", result.records);
+    console.log("Grocery List Response:", result.records); // Debugging log
 
     const groceryList = document.getElementById("grocery-list");
     groceryList.innerHTML = "";
 
     result.records.forEach((record) => {
       const item = record.fields;
+      console.log("Processing Record:", item); // Debug each record
+
       const listItem = document.createElement("li");
       listItem.textContent = `${item.Qty} x ${item["Item Name"]} (${item.Category}) @ ${item.Location}`;
       groceryList.appendChild(listItem);
@@ -202,6 +203,8 @@ document.getElementById("grocery-form").addEventListener("submit", function (e) 
   const qty = document.getElementById("grocery-quantity").value.trim();
   const location = document.getElementById("grocery-location").value.trim();
   const category = document.getElementById("grocery-category").value;
+
+  console.log("Form Values:", { itemName, qty, location, category }); // Debugging log
 
   if (!itemName || !qty || !location || !category) {
     alert("Please fill out all required fields.");

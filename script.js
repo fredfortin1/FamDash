@@ -1,121 +1,126 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyAASy_RNNlpPMGiFYDEaYGppMAVpUYBRL8",
-  authDomain: "db---dashboard-famille.firebaseapp.com",
-  databaseURL: "https://db---dashboard-famille-default-rtdb.firebaseio.com",
-  projectId: "db---dashboard-famille",
-  storageBucket: "db---dashboard-famille.appspot.com",
-  messagingSenderId: "1042615306170",
-  appId: "1:1042615306170:web:2e17ef57dc964f6e537f83",
-  measurementId: "G-7TBK3PMXVG"
-};
+const airtableApiKey = "patE0muNfUazAzy2b.213d50dd597994c09fae3386d5adf6dcaf15ece626ad694492e8f9782b74854a"; // Your Airtable API key
+const baseId = "appXrtBBjZD2b3OQO"; // Your Airtable Base ID
+const airtableUrl = `https://api.airtable.com/v0/${baseId}`;
 
+// Helper function for making API requests
+async function airtableRequest(endpoint, method = "GET", body = null) {
+  const response = await fetch(`${airtableUrl}/${endpoint}`, {
+    method: method,
+    headers: {
+      Authorization: `Bearer ${airtableApiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: body ? JSON.stringify(body) : null,
+  });
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
-
-// Test Firebase connection
-const testRef = database.ref('test/');
-testRef.set({ message: "Hello Firebase" }, (error) => {
-  if (error) {
-    console.error("Error writing to database:", error);
-  } else {
-    console.log("Data written successfully.");
+  if (!response.ok) {
+    console.error("Airtable API Error:", response.statusText);
+    throw new Error(response.statusText);
   }
-});
 
+  return response.json();
+}
 // **Task Module**
-function saveTaskToFirebase(task) {
-  const tasksRef = database.ref("tasks/");
-  tasksRef.push(task, (error) => {
-    if (error) {
-      console.error("Error saving task:", error);
-    } else {
-      console.log("Task saved successfully!");
-    }
-  });
+async function addTask(taskTitle, assignedTo, reward) {
+  const newTask = {
+    fields: {
+      "Task Title": taskTitle,
+      "Assigned To": assignedTo,
+      "Reward": parseFloat(reward),
+    },
+  };
+
+  try {
+    const result = await airtableRequest("Tasks", "POST", newTask);
+    console.log("Task added:", result);
+  } catch (error) {
+    console.error("Error adding task:", error);
+  }
 }
 
-function loadTasksFromFirebase() {
-  const tasksRef = database.ref("tasks/");
-  tasksRef.on("value", (snapshot) => {
-    const tasks = snapshot.val();
-    if (tasks) {
-      document.getElementById("tasks-ellie").innerHTML = "";
-      document.getElementById("tasks-alexie").innerHTML = "";
+async function fetchTasks() {
+  try {
+    const result = await airtableRequest("Tasks", "GET");
+    console.log("Tasks:", result.records);
 
-      Object.values(tasks).forEach((task) => addTaskToList(task));
-    }
-  });
+    const ellieTasks = document.getElementById("tasks-ellie");
+    const alexieTasks = document.getElementById("tasks-alexie");
+
+    ellieTasks.innerHTML = "";
+    alexieTasks.innerHTML = "";
+
+    result.records.forEach((record) => {
+      const task = record.fields;
+      const list = task["Assigned To"] === "Éllie" ? ellieTasks : alexieTasks;
+
+      const listItem = document.createElement("li");
+      listItem.textContent = `${task["Task Title"]} - $${task.Reward}`;
+      list.appendChild(listItem);
+    });
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+  }
 }
 
-function addTaskToList(task) {
-  const list =
-    task.task_assigned_to === "Éllie"
-      ? document.getElementById("tasks-ellie")
-      : document.getElementById("tasks-alexie");
-
-  const listItem = document.createElement("li");
-  listItem.innerHTML = `
-    ${task.task_title} - $${task.task_reward}
-    <button class="delete-task">Delete</button>
-  `;
-  list.appendChild(listItem);
-
-  listItem.querySelector(".delete-task").addEventListener("click", function () {
-    listItem.remove();
-    console.log("Task deletion not yet implemented for Firebase.");
-  });
-}
+// Load tasks on page load
+document.addEventListener("DOMContentLoaded", fetchTasks);
 
 document.getElementById("task-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const task = {
-    task_title: document.getElementById("task-title").value.trim(),
-    task_assigned_to: document.getElementById("task-assigned-to").value,
-    task_reward: document.getElementById("task-reward").value.trim(),
-  };
-// Debugging: Log the task object to verify the data
-  console.log("Task Submitted:", task);
-  
-  if (!task.task_title || !task.task_assigned_to || task.task_reward === "") {
+  const taskTitle = document.getElementById("task-title").value.trim();
+  const assignedTo = document.getElementById("task-assigned-to").value;
+  const reward = document.getElementById("task-reward").value.trim();
+
+  if (!taskTitle || !assignedTo || reward === "") {
     alert("Please fill out all required fields.");
     return;
   }
 
-  saveTaskToFirebase(task);
+  addTask(taskTitle, assignedTo, reward);
   document.getElementById("task-form").reset();
 });
+// **END Task module**
 
-// **Grocery Module**
-function saveGroceryToFirebase(groceryItem) {
-  const groceriesRef = database.ref("groceries/");
-  groceriesRef.push(groceryItem, (error) => {
-    if (error) {
-      console.error("Error saving grocery:", error);
-    } else {
-      console.log("Grocery saved successfully!");
-    }
-  });
+// **Meals Module**
+async function addMeal(mealName, day) {
+  const newMeal = {
+    fields: {
+      "Meal Name": mealName,
+      Day: day,
+    },
+  };
+
+  try {
+    const result = await airtableRequest("Meals", "POST", newMeal);
+    console.log("Meal added:", result);
+  } catch (error) {
+    console.error("Error adding meal:", error);
+  }
 }
 
-function loadGroceriesFromFirebase() {
-  const groceriesRef = database.ref("groceries/");
-  groceriesRef.on("value", (snapshot) => {
-    const groceries = snapshot.val();
-    if (groceries) {
-      document.getElementById("grocery-list").innerHTML = "";
-      document.getElementById("grocery-archive").innerHTML = "";
+async function fetchMeals() {
+  try {
+    const result = await airtableRequest("Meals", "GET");
+    console.log("Meals:", result.records);
 
-      Object.values(groceries).forEach((groceryItem) => {
-        groceryItem.completed
-          ? addGroceryToArchive(groceryItem)
-          : addGroceryToList(groceryItem);
-      });
-    }
-  });
+    const mealsList = document.getElementById("meals-list");
+    mealsList.innerHTML = "";
+
+    result.records.forEach((record) => {
+      const meal = record.fields;
+      const listItem = document.createElement("li");
+      listItem.textContent = `${meal["Meal Name"]} - ${meal.Day}`;
+      mealsList.appendChild(listItem);
+    });
+  } catch (error) {
+    console.error("Error fetching meals:", error);
+  }
 }
+
+// Load meals on page load
+document.addEventListener("DOMContentLoaded", fetchMeals);
+
 
 function addGroceryToList(groceryItem) {
   const listItem = createGroceryListItem(groceryItem, false);
@@ -127,79 +132,61 @@ function addGroceryToArchive(groceryItem) {
   document.getElementById("grocery-archive").appendChild(listItem);
 }
 
-function createGroceryListItem(groceryItem, isArchived) {
-  const listItem = document.createElement("li");
-  listItem.innerHTML = `
-    <span>${groceryItem.quantity} x ${groceryItem.itemName} (${groceryItem.category}) @ ${groceryItem.location}</span>
-    <div>
-      <button class="${isArchived ? "rebuy-grocery" : "bought-grocery"}">
-        ${isArchived ? "Rebuy" : "Bought"}
-      </button>
-      <button class="delete-grocery">Delete</button>
-    </div>
-  `;
-
-  listItem.querySelector(`.${isArchived ? "rebuy-grocery" : "bought-grocery"}`).addEventListener("click", function () {
-    groceryItem.completed = !isArchived;
-    saveGroceryToFirebase(groceryItem); // Save updated state
-    listItem.remove();
-    groceryItem.completed
-      ? addGroceryToArchive(groceryItem)
-      : addGroceryToList(groceryItem);
-  });
-
-  listItem.querySelector(".delete-grocery").addEventListener("click", function () {
-    listItem.remove();
-    console.log("Deletion for groceries in Firebase not yet implemented.");
-  });
-
-  return listItem;
-}
-
-document.getElementById("grocery-form").addEventListener("submit", function (e) {
+document.getElementById("meals-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const groceryItem = {
-    itemName: document.getElementById("grocery-item").value.trim(),
-    quantity: document.getElementById("grocery-quantity").value.trim(),
-    location: document.getElementById("grocery-location").value.trim(),
-    category: document.getElementById("grocery-category").value,
-    completed: false,
-  };
- // Debugging: Log the grocery item to verify the data
-  console.log("Grocery Item Submitted:", groceryItem);
-  
-  if (!groceryItem.itemName || !groceryItem.quantity || !groceryItem.location || !groceryItem.category) {
-    alert("Please fill out all fields.");
+  const mealName = document.getElementById("meal-input").value.trim();
+  const day = document.getElementById("meal-day").value;
+
+  if (!mealName || !day) {
+    alert("Please fill out all required fields.");
     return;
   }
 
-  saveGroceryToFirebase(groceryItem);
-  document.getElementById("grocery-form").reset();
+  addMeal(mealName, day);
+  document.getElementById("meals-form").reset();
 });
+// ** END Meals Module **
 
-// **Meals Module**
-function saveMealToFirebase(meal) {
-  const mealsRef = database.ref("meals/");
-  mealsRef.push(meal, (error) => {
-    if (error) {
-      console.error("Error saving meal:", error);
-    } else {
-      console.log("Meal saved successfully!");
-    }
-  });
+// ** Grocery Module **
+async function addGroceryItem(itemName, quantity, category) {
+  const newItem = {
+    fields: {
+      "Item Name": itemName,
+      Quantity: parseInt(quantity),
+      Category: category,
+    },
+  };
+
+  try {
+    const result = await airtableRequest("Grocery List", "POST", newItem);
+    console.log("Grocery item added:", result);
+  } catch (error) {
+    console.error("Error adding grocery item:", error);
+  }
 }
 
-function loadMealsFromFirebase() {
-  const mealsRef = database.ref("meals/");
-  mealsRef.on("value", (snapshot) => {
-    const meals = snapshot.val();
-    if (meals) {
-      document.getElementById("meals-list").innerHTML = "";
-      Object.values(meals).forEach((meal) => addMealToList(meal));
-    }
-  });
+async function fetchGroceries() {
+  try {
+    const result = await airtableRequest("Grocery List", "GET");
+    console.log("Grocery List:", result.records);
+
+    const groceryList = document.getElementById("grocery-list");
+    groceryList.innerHTML = "";
+
+    result.records.forEach((record) => {
+      const item = record.fields;
+      const listItem = document.createElement("li");
+      listItem.textContent = `${item["Quantity"]} x ${item["Item Name"]} (${item.Category})`;
+      groceryList.appendChild(listItem);
+    });
+  } catch (error) {
+    console.error("Error fetching grocery items:", error);
+  }
 }
+
+// Load grocery list on page load
+document.addEventListener("DOMContentLoaded", fetchGroceries);
 
 function addMealToList(meal) {
   const listItem = document.createElement("li");
@@ -210,20 +197,20 @@ function addMealToList(meal) {
 document.getElementById("meals-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const meal = {
-    name: document.getElementById("meal-input").value.trim(),
-    day: document.getElementById("meal-day").value,
-  };
- // Debugging: Log the meal object to verify the data
-  console.log("Meal Submitted:", meal);
-  
-  if (!meal.name || !meal.day) {
-    alert("Please fill out all fields.");
+document.getElementById("grocery-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const itemName = document.getElementById("grocery-item").value.trim();
+  const quantity = document.getElementById("grocery-quantity").value.trim();
+  const category = document.getElementById("grocery-category").value;
+
+  if (!itemName || !quantity || !category) {
+    alert("Please fill out all required fields.");
     return;
   }
 
-  saveMealToFirebase(meal);
-  document.getElementById("meals-form").reset();
+  addGroceryItem(itemName, quantity, category);
+  document.getElementById("grocery-form").reset();
 });
 
 // **Clock, Theme, and Utility Functions**

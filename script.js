@@ -2,7 +2,7 @@ const airtableApiKey = "patE0muNfUazAzy2b.213d50dd597994c09fae3386d5adf6dcaf15ec
 const baseId = "appXrtBBjZD2b3OQO"; // Your Airtable Base ID
 const airtableUrl = `https://api.airtable.com/v0/${baseId}`;
 
-// Helper function for making API requests
+// Helper function to make Airtable API requests
 async function airtableRequest(endpoint, method = "GET", body = null) {
   const response = await fetch(`${airtableUrl}/${endpoint}`, {
     method: method,
@@ -20,13 +20,18 @@ async function airtableRequest(endpoint, method = "GET", body = null) {
 
   return response.json();
 }
-// **Task Module**
+
+//
+// TASKS MODULE
+//
+
+// Add a Task to Airtable
 async function addTask(taskTitle, assignedTo, reward) {
   const newTask = {
     fields: {
       "Task Title": taskTitle,
       "Assigned To": assignedTo,
-      "Reward": parseFloat(reward),
+      Reward: parseFloat(reward),
     },
   };
 
@@ -38,6 +43,7 @@ async function addTask(taskTitle, assignedTo, reward) {
   }
 }
 
+// Fetch and display tasks from Airtable
 async function fetchTasks() {
   try {
     const result = await airtableRequest("Tasks", "GET");
@@ -51,7 +57,10 @@ async function fetchTasks() {
 
     result.records.forEach((record) => {
       const task = record.fields;
-      const list = task["Assigned To"] === "Éllie" ? ellieTasks : alexieTasks;
+      const list =
+        task["Assigned To"] === "Éllie"
+          ? ellieTasks
+          : alexieTasks; // Extend logic if there are more users
 
       const listItem = document.createElement("li");
       listItem.textContent = `${task["Task Title"]} - $${task.Reward}`;
@@ -62,9 +71,7 @@ async function fetchTasks() {
   }
 }
 
-// Load tasks on page load
-document.addEventListener("DOMContentLoaded", fetchTasks);
-
+// Task form submission handler
 document.getElementById("task-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -80,9 +87,15 @@ document.getElementById("task-form").addEventListener("submit", function (e) {
   addTask(taskTitle, assignedTo, reward);
   document.getElementById("task-form").reset();
 });
-// **END Task module**
 
-// **Meals Module**
+// Load tasks on page load
+document.addEventListener("DOMContentLoaded", fetchTasks);
+
+//
+// MEALS MODULE
+//
+
+// Add a Meal to Airtable
 async function addMeal(mealName, day) {
   const newMeal = {
     fields: {
@@ -99,6 +112,7 @@ async function addMeal(mealName, day) {
   }
 }
 
+// Fetch and display meals from Airtable
 async function fetchMeals() {
   try {
     const result = await airtableRequest("Meals", "GET");
@@ -118,20 +132,7 @@ async function fetchMeals() {
   }
 }
 
-// Load meals on page load
-document.addEventListener("DOMContentLoaded", fetchMeals);
-
-
-function addGroceryToList(groceryItem) {
-  const listItem = createGroceryListItem(groceryItem, false);
-  document.getElementById("grocery-list").appendChild(listItem);
-}
-
-function addGroceryToArchive(groceryItem) {
-  const listItem = createGroceryListItem(groceryItem, true);
-  document.getElementById("grocery-archive").appendChild(listItem);
-}
-
+// Meal form submission handler
 document.getElementById("meals-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -146,14 +147,21 @@ document.getElementById("meals-form").addEventListener("submit", function (e) {
   addMeal(mealName, day);
   document.getElementById("meals-form").reset();
 });
-// ** END Meals Module **
 
-// ** Grocery Module **
-async function addGroceryItem(itemName, quantity, category) {
+// Load meals on page load
+document.addEventListener("DOMContentLoaded", fetchMeals);
+
+//
+// GROCERY LIST MODULE
+//
+
+// Add a Grocery Item to Airtable
+async function addGroceryItem(itemName, qty, location, category) {
   const newItem = {
     fields: {
       "Item Name": itemName,
-      Quantity: parseInt(quantity),
+      Qty: parseInt(qty),
+      Location: location,
       Category: category,
     },
   };
@@ -166,6 +174,7 @@ async function addGroceryItem(itemName, quantity, category) {
   }
 }
 
+// Fetch and display grocery items from Airtable
 async function fetchGroceries() {
   try {
     const result = await airtableRequest("Grocery List", "GET");
@@ -177,7 +186,7 @@ async function fetchGroceries() {
     result.records.forEach((record) => {
       const item = record.fields;
       const listItem = document.createElement("li");
-      listItem.textContent = `${item["Quantity"]} x ${item["Item Name"]} (${item.Category})`;
+      listItem.textContent = `${item.Qty} x ${item["Item Name"]} (${item.Category}) @ ${item.Location}`;
       groceryList.appendChild(listItem);
     });
   } catch (error) {
@@ -185,33 +194,26 @@ async function fetchGroceries() {
   }
 }
 
-// Load grocery list on page load
-document.addEventListener("DOMContentLoaded", fetchGroceries);
-
-function addMealToList(meal) {
-  const listItem = document.createElement("li");
-  listItem.textContent = `${meal.day}: ${meal.name}`;
-  document.getElementById("meals-list").appendChild(listItem);
-}
-
-document.getElementById("meals-form").addEventListener("submit", function (e) {
-  e.preventDefault();
-
+// Grocery form submission handler
 document.getElementById("grocery-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
   const itemName = document.getElementById("grocery-item").value.trim();
-  const quantity = document.getElementById("grocery-quantity").value.trim();
+  const qty = document.getElementById("grocery-quantity").value.trim();
+  const location = document.getElementById("grocery-location").value.trim();
   const category = document.getElementById("grocery-category").value;
 
-  if (!itemName || !quantity || !category) {
+  if (!itemName || !qty || !location || !category) {
     alert("Please fill out all required fields.");
     return;
   }
 
-  addGroceryItem(itemName, quantity, category);
+  addGroceryItem(itemName, qty, location, category);
   document.getElementById("grocery-form").reset();
 });
+
+// Load grocery list on page load
+document.addEventListener("DOMContentLoaded", fetchGroceries);
 
 // **Clock, Theme, and Utility Functions**
 // (These remain unchanged, refer to the previous script for details)

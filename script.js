@@ -1,18 +1,20 @@
-// Firebase configuration
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyAASy_RNNlpPMGiFYDEaYGppMAVpUYBRL8",
-  authDomain: "db---dashboard-famille.firebaseapp.com",
-  databaseURL: "https://db---dashboard-famille-default-rtdb.firebaseio.com",
-  projectId: "db---dashboard-famille",
-  storageBucket: "db---dashboard-famille.firebasestorage.app",
-  messagingSenderId: "1042615306170",
-  appId: "1:1042615306170:web:2e17ef57dc964f6e537f83",
-  measurementId: "G-7TBK3PMXVG"
+  apiKey: "your-api-key",
+  authDomain: "your-auth-domain",
+  databaseURL: "your-database-url",
+  projectId: "your-project-id",
+  storageBucket: "your-storage-bucket",
+  messagingSenderId: "your-messaging-sender-id",
+  appId: "your-app-id",
+  measurementId: "your-measurement-id"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
 
 // Initialize all modules when DOM is ready
 document.addEventListener("DOMContentLoaded", function () {

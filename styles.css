@@ -155,32 +155,6 @@ body[data-theme="dark"] button {
   color: #e5e7eb;
 }
 
-/* Tables */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-thead {
-  background-color: #f3f4f6;
-}
-
-body[data-theme="dark"] thead {
-  background-color: #374151;
-}
-
-th, td {
-  padding: 10px;
-  font-size: 16px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-body[data-theme="dark"] th,
-body[data-theme="dark"] td {
-  border: 1px solid #4b5563;
-}
-
 /* Lists */
 ul {
   list-style: none;
@@ -264,10 +238,11 @@ li button:hover {
     transform: translateY(0);
   }
 }
+
 .clock {
-	display: flex;
+  display: flex;
   font-size: 16px;
   font-weight: bold;
   color: #FFFFFF;
   align-items: right;
-  }
+}
